@@ -23,18 +23,6 @@ def find_mins(graph):
     return indies
 
 
-def remove_nearest(mins: set, k):
-    bads = set()
-    sorted_mins = list(sorted(mins, key=lambda n: n.index))
-    len_mins = len(mins)
-    for i, _ in enumerate(sorted_mins):
-        if sorted_mins[i] not in bads:
-            for j in range(i + 1, len_mins):
-                if sorted_mins[i].index + k >= sorted_mins[j].index:
-                    bads.add(sorted_mins[j])
-    return list(mins - bads)
-
-
 def nodes_to_str(nodes):
     sorted_n = map(lambda n1:str(n1.index), sorted(nodes, key=lambda n:n.index))
     return '_'.join(sorted_n)
@@ -44,9 +32,7 @@ def find_k_min_spanning_tree(graph, k):
     solution = get_first_spanning_tree(graph, k)
     tree_nodes, tree_edges, res_tree_nodes, res_tree_edges = set(), set(), set(), set()
     print(solution.graph_weight())
-    # mins = find_mins(graph)
     mins = graph.nodes
-    # mins = get_middle_nodes(graph, k)
     results = set()
     for start in mins:
         s_pos = start
@@ -57,7 +43,6 @@ def find_k_min_spanning_tree(graph, k):
         results.add(nodes_as_str)
         print_result_to_file(k, res, graph, tree_edges)
         graph_weight = res.graph_weight()
-        # print(graph_weight)
         if graph_weight < solution.graph_weight():
             res_tree_nodes, res_tree_edges, solution = tree_nodes, tree_edges, res
     print()
@@ -73,7 +58,6 @@ def get_middle_nodes(graph, k):
     return nodes[mid:] + nodes[:mid]
 
 
-# if edge[1].index - 2 * k < middle < edge[1].index + 2 * k:
 def find_spanning_tree(graph, start_node, k):
     tree_edges = set()
     tree_nodes = {start_node}
@@ -82,10 +66,7 @@ def find_spanning_tree(graph, start_node, k):
         nearest_edges = find_min_nearest_node(graph, tree_nodes)
         nearest_edge = None
         if len(nearest_edges) > 1:
-            # nearest_edge = nearest_edges[-1]
             nearest_edge = sorted(nearest_edges, key=lambda e:e[1].index)[int(len(nearest_edges) / 2)]
-            # nearest_edge = sorted(nearest_edges, key=lambda e:e[1].index)[0]
-            # nearest_edge = sorted(nearest_edges, key=lambda e:e[1].index)[-1]
         else:
             nearest_edge = nearest_edges.pop()
         tree_edges.add((nearest_edge[0], nearest_edge[1], nearest_edge[2]))
